@@ -253,8 +253,12 @@
 }
 
 - (void)updateGraph {
+    
     timerLabel.text = [NSString stringWithFormat:@"%i", count];
     if (sharedManager.wardData.count > count) {
+        NSString* wardInfo = (NSString*)[[sharedManager.wardData objectAtIndex:count] copy];
+        NSString* wardNumber = [wardInfo valueForKey:@"Ward"];
+        if([wardNumber intValue] == self.segmentedControl.selectedSegmentIndex + 1)
         [dataForPlot addObject:[sharedManager.wardData objectAtIndex:count]];
         if ((count+1) % 15 == 0) {
             [sharedManager updateWardData];

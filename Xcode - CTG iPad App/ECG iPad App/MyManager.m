@@ -91,11 +91,13 @@
                                                             code:1
                                                         userInfo:[d objectForKey:@"meta"]];
                            }
+                           NSLog(@"%@",d);
                            return d;
                        }
                       completionBlock:^(FSNConnection *c) {
                           NSArray *array = (NSArray *)c.parseResult;
                           NSDictionary *dictionary = [array objectAtIndex:0];
+                          //NSLog(@"%@",dictionary);
                           for (id object in [dictionary objectForKey:@"objects"]) {
                               if ([scriptName isEqual:@"getPatients"]) {
                                   int index = [[object objectForKey:@"ward_id"] intValue];
@@ -104,6 +106,7 @@
                               }
                               else {
                                   [wardData addObject:object];
+                                  //NSLog(@"count: %@", object);
                               }
                           }
                       }
