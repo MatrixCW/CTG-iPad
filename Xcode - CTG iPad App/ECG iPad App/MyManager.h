@@ -7,16 +7,21 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "getLargeDataFinishedProtocol.h"
 
 @interface MyManager : NSObject
 
 @property (strong, nonatomic) NSMutableArray *patientList;
 @property (strong, nonatomic) NSMutableArray *wardData;
+@property (strong, nonatomic) NSMutableArray *historyData;
+
+@property id<getLargeDataFinishedProtocol> myDelegate;
+
 
 + (id)sharedManager;
 
 - (void)getPatients;
 - (void)updatePatientListWithPatient:(NSDictionary *)patient;
 - (void)updateWardData;
-
+- (void)getHistoryData:(NSString*)wardNumber;
 @end

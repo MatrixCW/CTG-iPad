@@ -33,7 +33,9 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.NoDataWarning.alpha = 0.0;
     sharedManager = [MyManager sharedManager];
+    sharedManager.myDelegate = self;
     self.segmentedControl.selectedSegmentIndex = 0;
     dataForPlot = [NSMutableArray array];
     patientView.patient = [sharedManager.patientList objectAtIndex:self.segmentedControl.selectedSegmentIndex];
@@ -220,7 +222,12 @@
 
 #pragma mark - UISegmentedControl Methods
 
+-(void)restoreHistoryButton{
+    [self.historyButton setTitle:@"History" forState:UIControlStateNormal];
+}
+
 - (IBAction)segmentedControlIndexChanged {
+    [self restoreHistoryButton];
     patientView.patient = [sharedManager.patientList objectAtIndex:self.segmentedControl.selectedSegmentIndex];
     [patientView.tableView reloadData];
     [self removeOldPlots];
@@ -256,15 +263,28 @@
     
     timerLabel.text = [NSString stringWithFormat:@"%i", count];
     if (sharedManager.wardData.count > count) {
-        NSString* wardInfo = (NSString*)[[sharedManager.wardData objectAtIndex:count] copy];
+        NSDictionary* wardInfo = [[sharedManager.wardData objectAtIndex:count] copy];
         NSString* wardNumber = [wardInfo valueForKey:@"Ward"];
-        if([wardNumber intValue] == self.segmentedControl.selectedSegmentIndex + 1)
-        [dataForPlot addObject:[sharedManager.wardData objectAtIndex:count]];
+        if([wardNumber intValue] == self.segmentedControl.selectedSegmentIndex + 1){
+            
+            if([[wardInfo valueForKey:@"id"] intValue] > [[[dataForPlot lastObject] valueForKey:@"id"] intValue]){
+                
+                [dataForPlot addObject:[sharedManager.wardData objectAtIndex:count]];
+                //NSLog(@"%@",[sharedManager.wardData objectAtIndex:count]);
+                self.NoDataWarning.alpha = 0.0;
+            }
+            else{
+                self.NoDataWarning.alpha = 1.0;
+                
+            }
+            
+        }
         if ((count+1) % 15 == 0) {
             [sharedManager updateWardData];
         }
+        
         [self updatePlots];
-
+        
         count++;
     }
     else
@@ -272,6 +292,76 @@
 }
 
 #pragma mark - UIGestureRecognizer Methods
+
+
+- (IBAction)switchBetweenHistoryAndCurrentData:(id)sender{
+    UIButton* switchButton = (UIButton*)sender;
+    
+    if([switchButton.titleLabel.text isEqualToString:@"History"]){
+        [switchButton setTitle:@"Continue" forState:UIControlStateNormal];
+        [self showHistoryData];
+    }
+    else{
+        [switchButton setTitle:@"History" forState:UIControlStateNormal];
+        [self startPlot];
+    }
+    
+}
+
+- (IBAction)showHistoryData{
+    self.NoDataWarning.alpha = 0.0;
+    [sharedManager.historyData removeAllObjects];
+    timerLabel.text = @"0";
+    [timer invalidate];
+    timer = nil;
+    [dataForPlot removeAllObjects];
+    [sharedManager.wardData removeAllObjects];
+    count = 0;
+    NSNumber* selected = [NSNumber numberWithInt:self.segmentedControl.selectedSegmentIndex+1];
+    NSString* queryString = [@"id=" stringByAppendingString:[selected stringValue]];
+    [sharedManager getHistoryData:queryString];
+    
+}
+
+-(void)finished{
+    
+    
+    [self removeOldPlots];
+    /*
+     for(id object in sharedManager.historyData){
+     count++;
+     [dataForPlot addObject:object];
+     [self updatePlots];
+     
+     }
+     */
+    
+    
+    
+    timer  = [NSTimer scheduledTimerWithTimeInterval:0.001
+                                              target:self
+                                            selector:@selector(second)
+                                            userInfo:nil
+                                             repeats:YES];
+    
+    
+}
+
+-(void)second{
+    
+    count++;
+    
+    if(count < sharedManager.historyData.count){
+        [dataForPlot addObject:[sharedManager.historyData objectAtIndex:count]];
+        [self updatePlots];
+    }
+    else{
+        [timer invalidate];
+        timer = nil;
+    }
+    
+}
+
 
 - (IBAction)handleGraphScroll:(UIPanGestureRecognizer *)recognizer {
     if (recognizer.state == UIGestureRecognizerStateBegan) {
@@ -296,7 +386,7 @@
         CPTXYPlotSpace *plotSpace = (CPTXYPlotSpace *)graph2.defaultPlotSpace;
         plotSpace.xRange          = [CPTPlotRange plotRangeWithLocation:CPTDecimalFromInt(0) length:CPTDecimalFromInt(X)];
     }
-
+    
 }
 
 #pragma mark - UIGestureRecognizerDelegate Methods

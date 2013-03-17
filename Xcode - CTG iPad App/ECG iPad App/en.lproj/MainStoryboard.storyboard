@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="3084" systemVersion="12C3012" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" initialViewController="5DW-Ne-qQ0">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="3084" systemVersion="12C3012" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" initialViewController="Q7A-li-xc8">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="2083"/>
     </dependencies>
@@ -36,21 +36,21 @@
                                 </connections>
                             </segmentedControl>
                             <containerView contentMode="scaleToFill" id="e0n-aU-EEy">
-                                <rect key="frame" x="20" y="57" width="317" height="543"/>
+                                <rect key="frame" x="20" y="57" width="317" height="507"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <connections>
                                     <segue destination="VtY-Ju-Ozf" kind="embed" identifier="patientView" id="WLM-3V-4se"/>
                                 </connections>
                             </containerView>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Timer:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="HxP-MH-s05" userLabel="TimerTitle">
-                                <rect key="frame" x="20" y="641" width="49" height="21"/>
+                                <rect key="frame" x="33" y="635" width="49" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="0" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="rvf-k3-GeV" userLabel="TimerCount">
-                                <rect key="frame" x="101" y="641" width="42" height="21"/>
+                                <rect key="frame" x="105" y="635" width="42" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -65,7 +65,7 @@
                                 </connections>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="XQh-t5-yMr">
-                                <rect key="frame" x="233" y="630" width="76" height="44"/>
+                                <rect key="frame" x="236" y="625" width="76" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                 <state key="normal" title="History">
@@ -75,7 +75,17 @@
                                 <state key="highlighted">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
+                                <connections>
+                                    <action selector="switchBetweenHistoryAndCurrentData:" destination="2" eventType="touchUpInside" id="Dwz-Bf-NLh"/>
+                                </connections>
                             </button>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="No New Data Available!" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Zld-Vx-MSd">
+                                <rect key="frame" x="88" y="583" width="180" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
@@ -87,8 +97,10 @@
                     </navigationItem>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     <connections>
+                        <outlet property="NoDataWarning" destination="Zld-Vx-MSd" id="1UB-72-hyc"/>
                         <outlet property="graphView" destination="k9o-Ll-9Tm" id="4OS-25-RSt"/>
                         <outlet property="graphView2" destination="x1p-bU-ral" id="Tly-na-Fqe"/>
+                        <outlet property="historyButton" destination="XQh-t5-yMr" id="6HY-Eg-btG"/>
                         <outlet property="segmentedControl" destination="KlN-lE-Pen" id="CXm-qX-yF3"/>
                         <outlet property="timerLabel" destination="rvf-k3-GeV" id="Oya-2f-fkR"/>
                     </connections>
@@ -108,14 +120,14 @@
                 </tapGestureRecognizer>
                 <barButtonItem title="Back" id="qGc-90-ykl"/>
             </objects>
-            <point key="canvasLocation" x="760" y="-12"/>
+            <point key="canvasLocation" x="1718" y="-405"/>
         </scene>
         <!--Patient View Controller-->
         <scene sceneID="Mhj-2d-hXz">
             <objects>
                 <tableViewController id="VtY-Ju-Ozf" customClass="PatientViewController" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="singleLineEtched" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="PHR-G4-KCP">
-                        <rect key="frame" x="0.0" y="0.0" width="317" height="543"/>
+                        <rect key="frame" x="0.0" y="0.0" width="317" height="507"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
@@ -123,16 +135,13 @@
                             <rect key="frame" x="0.0" y="90" width="317" height="64"/>
                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                             <subviews>
-                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="hMs-z3-Qgd">
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="hMs-z3-Qgd">
                                     <rect key="frame" x="10" y="10" width="297" height="44"/>
                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                    <fontDescription key="fontDescription" type="boldSystem" size="button"/>
+                                    <fontDescription key="fontDescription" name="Helvetica-Bold" family="Helvetica" pointSize="18"/>
                                     <state key="normal" title="Edit Patient Information">
                                         <color key="titleColor" red="0.19607843137254902" green="0.30980392156862746" blue="0.52156862745098043" alpha="1" colorSpace="calibratedRGB"/>
                                         <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                    </state>
-                                    <state key="highlighted">
-                                        <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     </state>
                                     <connections>
                                         <action selector="enterEditMode:" destination="VtY-Ju-Ozf" eventType="touchUpInside" id="ZgL-Zc-o01"/>
@@ -242,59 +251,24 @@
             <point key="canvasLocation" x="760" y="1607"/>
         </scene>
         <!--Navigation Controller-->
-        <scene sceneID="xzP-r2-hgm">
+        <scene sceneID="swQ-rA-PZa">
             <objects>
-                <navigationController id="5DW-Ne-qQ0" sceneMemberID="viewController">
+                <navigationController id="Q7A-li-xc8" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="e0x-3d-pxi">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="RzF-7W-YHK">
                         <rect key="frame" x="0.0" y="0.0" width="768" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
-                        <segue destination="2" kind="relationship" relationship="rootViewController" id="6yk-6Q-5jx"/>
+                        <segue destination="2" kind="relationship" relationship="rootViewController" id="quh-5g-WhQ"/>
                     </connections>
                 </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="jRN-AE-y8W" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="TwT-WO-Qjl" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-137" y="-12"/>
+            <point key="canvasLocation" x="400" y="-477"/>
         </scene>
     </scenes>
-    <classes>
-        <class className="CPTGraphHostingView" superclassName="UIView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CPTGraphHostingView.h"/>
-        </class>
-        <class className="CustomTextField" superclassName="UITextField">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CustomTextField.h"/>
-        </class>
-        <class className="PatientCell" superclassName="UITableViewCell">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/PatientCell.h"/>
-            <relationships>
-                <relationship kind="outlet" name="keyLabel" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="valueEditField" candidateClass="CustomTextField"/>
-                <relationship kind="outlet" name="valueLabel" candidateClass="UILabel"/>
-            </relationships>
-        </class>
-        <class className="PatientViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/PatientViewController.h"/>
-            <relationships>
-                <relationship kind="outlet" name="cancelButton" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="editButton" candidateClass="UIButton"/>
-                <relationship kind="outlet" name="saveButton" candidateClass="UIButton"/>
-            </relationships>
-        </class>
-        <class className="ViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/ViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="handleGraphScroll:" candidateClass="UIPanGestureRecognizer"/>
-                <relationship kind="action" name="handleGraphTap:" candidateClass="UITapGestureRecognizer"/>
-                <relationship kind="outlet" name="graphView" candidateClass="CPTGraphHostingView"/>
-                <relationship kind="outlet" name="graphView2" candidateClass="CPTGraphHostingView"/>
-                <relationship kind="outlet" name="segmentedControl" candidateClass="UISegmentedControl"/>
-                <relationship kind="outlet" name="timerLabel" candidateClass="UILabel"/>
-            </relationships>
-        </class>
-    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar" statusBarStyle="blackTranslucent"/>
         <simulatedOrientationMetrics key="orientation"/>

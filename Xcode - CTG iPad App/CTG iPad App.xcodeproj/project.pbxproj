@@ -142,6 +142,7 @@
 		039F8B3A16CCE71C00639C27 /* PatientViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PatientViewController.m; sourceTree = "<group>"; };
 		039F8B4616CCF8B100639C27 /* MyManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyManager.h; sourceTree = "<group>"; };
 		039F8B4716CCF8B100639C27 /* MyManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyManager.m; sourceTree = "<group>"; };
+		4B28B08316F5F78C00B4CEA6 /* getLargeDataFinishedProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = getLargeDataFinishedProtocol.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -200,6 +201,7 @@
 				039F8B4716CCF8B100639C27 /* MyManager.m */,
 				039F8ABC16CCBA9B00639C27 /* ViewController.h */,
 				039F8ABD16CCBA9B00639C27 /* ViewController.m */,
+				4B28B08316F5F78C00B4CEA6 /* getLargeDataFinishedProtocol.h */,
 				039F8B3916CCE71C00639C27 /* PatientViewController.h */,
 				039F8B3A16CCE71C00639C27 /* PatientViewController.m */,
 				039F8B3016CCD81200639C27 /* PatientCell.h */,

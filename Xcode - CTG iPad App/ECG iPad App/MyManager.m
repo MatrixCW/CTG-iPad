@@ -8,12 +8,16 @@
 
 #import "MyManager.h"
 #import "FSNConnection.h"
+
+
+
 #define FSN_QUEUED_CONNECTIONS 1
 
 @interface MyManager ()
 @property (strong, nonatomic) FSNConnection *connection;
 @property (strong, nonatomic) FSNConnection *connection2;
 @property (strong, nonatomic) FSNConnection *connection3;
+@property (strong, nonatomic) FSNConnection *connection4;
 @end
 
 @implementation MyManager {
@@ -21,7 +25,7 @@
     NSDictionary *updatedPatient;
 }
 
-@synthesize patientList, wardData, connection, connection2, connection3;
+@synthesize patientList, wardData, connection, connection2, connection3, connection4,historyData;
 
 + (id)sharedManager {
     static MyManager *sharedMyManager = nil;
@@ -36,6 +40,7 @@
     if (self = [super init]) {
         patientList = [NSMutableArray array];
         wardData = [NSMutableArray array];
+        historyData = [NSMutableArray array];
         prefs = [NSUserDefaults standardUserDefaults];
         if ([prefs objectForKey:@"patients"] == nil) {
             [self createPatientProfiles];
@@ -49,14 +54,22 @@
 
 - (void)getPatients {
     [self.connection cancel];
-    self.connection = [self makeConnectionFor:@"getPatients"];
+    self.connection = [self makeConnectionFor:@"getPatients.php"];
     [self.connection start];
 }
 
 - (void)updateWardData {
     [self.connection2 cancel];
-    self.connection2 = [self makeConnectionFor:@"getWardData"];
+    self.connection2 = [self makeConnectionFor:@"getWardData.php"];
     [self.connection2 start];
+}
+
+- (void)getHistoryData:(NSString*)wardNumber {
+    
+    
+    [self.connection4 cancel];
+    self.connection4 = [self makeConnectionFor:[@"getHistoryData.php?" stringByAppendingString:wardNumber]];
+    [self.connection4 start];
 }
 
 - (void)updatePatientListWithPatient:(NSDictionary *)patient {
@@ -78,7 +91,10 @@
 
 - (FSNConnection *)makeConnectionFor:(NSString *)scriptName {
     
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://ec2-54-251-66-243.ap-southeast-1.compute.amazonaws.com/%@.php", scriptName]];
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://ec2-54-251-66-243.ap-southeast-1.compute.amazonaws.com/%@", scriptName]];;
+    
+    
+    //NSLog(@"%@", url);
     return [FSNConnection withUrl:url
                            method:FSNRequestMethodPOST
                           headers:nil
@@ -91,25 +107,30 @@
                                                             code:1
                                                         userInfo:[d objectForKey:@"meta"]];
                            }
-                           NSLog(@"%@",d);
+                           //NSLog(@"%@",d);
                            return d;
                        }
-                      completionBlock:^(FSNConnection *c) {
-                          NSArray *array = (NSArray *)c.parseResult;
-                          NSDictionary *dictionary = [array objectAtIndex:0];
-                          //NSLog(@"%@",dictionary);
-                          for (id object in [dictionary objectForKey:@"objects"]) {
-                              if ([scriptName isEqual:@"getPatients"]) {
-                                  int index = [[object objectForKey:@"ward_id"] intValue];
-                                  [patientList replaceObjectAtIndex:index-1 withObject:object];
-                                  NSLog(@"object: %@", object);
-                              }
-                              else {
-                                  [wardData addObject:object];
-                                  //NSLog(@"count: %@", object);
-                              }
+                  completionBlock:^(FSNConnection *c) {
+                      NSArray *array = (NSArray *)c.parseResult;
+                      NSDictionary *dictionary = [array objectAtIndex:0];
+                      
+                      for (id object in [dictionary objectForKey:@"objects"]) {
+                          if ([scriptName isEqual:@"getPatients.php"]) {
+                              int index = [[object objectForKey:@"ward_id"] intValue];
+                              [patientList replaceObjectAtIndex:index-1 withObject:object];
+                          } else if([scriptName isEqualToString:@"getWardData.php"]){
+                              [wardData addObject:object];
                           }
+                          else {
+                              
+                              [self.historyData addObject:object];
+                          }
+                          
                       }
+                      
+                      if (![scriptName isEqual:@"getPatients.php"] && ![scriptName isEqualToString:@"getWardData.php"])
+                          [self.myDelegate finished];
+                  }
                     progressBlock:nil];
 }
 
@@ -130,7 +151,7 @@
                            return d;
                        }
                   completionBlock:^(FSNConnection *c) {
-                      NSLog(@"response: %@, type: %@", c.parseResult, [c.parseResult class]);
+                      //NSLog(@"response: %@, type: %@", c.parseResult, [c.parseResult class]);
                   }
                     progressBlock:nil];
 }
