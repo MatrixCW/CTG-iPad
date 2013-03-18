@@ -15,7 +15,7 @@
 @property (strong, nonatomic) NSMutableArray *wardData;
 @property (strong, nonatomic) NSMutableArray *historyData;
 
-@property id<getLargeDataFinishedProtocol> myDelegate;
+@property (weak) id<getLargeDataFinishedProtocol> myDelegate;
 
 
 + (id)sharedManager;
