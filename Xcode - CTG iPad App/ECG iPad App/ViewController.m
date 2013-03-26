@@ -260,6 +260,7 @@
 }
 
 - (void)updateGraph {
+
     
     timerLabel.text = [NSString stringWithFormat:@"%i", count];
     if (sharedManager.wardData.count > count) {

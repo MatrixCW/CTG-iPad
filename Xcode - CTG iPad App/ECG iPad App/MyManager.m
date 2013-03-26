@@ -64,6 +64,17 @@
     [self.connection2 start];
 }
 
+- (void)updateCurrentWardData:(NSInteger)wardNumber{
+    NSNumber *number = [NSNumber numberWithInt:wardNumber];
+    NSString *stringValue = [number stringValue];
+    [self.connection2 cancel];
+    self.connection2 = [self makeConnectionFor:
+                        [@"getWardDataWithNumber.php?id=" stringByAppendingString:
+                                                                     stringValue]];
+    [self.connection2 start];
+
+}
+
 - (void)getHistoryData:(NSString*)wardNumber {
     
     

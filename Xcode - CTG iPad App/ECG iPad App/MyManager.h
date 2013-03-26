@@ -23,5 +23,6 @@
 - (void)getPatients;
 - (void)updatePatientListWithPatient:(NSDictionary *)patient;
 - (void)updateWardData;
+- (void)updateCurrentWardData:(NSInteger)wardNumber;
 - (void)getHistoryData:(NSString*)wardNumber;
 @end
