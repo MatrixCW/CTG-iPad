@@ -36,7 +36,7 @@
     return sharedMyManager;
 }
 
-- (id)init {
+- (id)init{
     if (self = [super init]) {
         patientList = [NSMutableArray array];
         wardData = [NSMutableArray array];
@@ -47,7 +47,7 @@
         }
         patientList = [[prefs objectForKey:@"patients"] mutableCopy];
         [self getPatients];
-        [self updateWardData];
+        
     }
     return self;
 }
@@ -58,11 +58,7 @@
     [self.connection start];
 }
 
-- (void)updateWardData {
-    [self.connection2 cancel];
-    self.connection2 = [self makeConnectionFor:@"getWardData.php"];
-    [self.connection2 start];
-}
+
 
 - (void)updateCurrentWardData:(NSInteger)wardNumber{
     NSNumber *number = [NSNumber numberWithInt:wardNumber];
@@ -75,11 +71,12 @@
 
 }
 
-- (void)getHistoryData:(NSString*)wardNumber {
+- (void)getHistoryData:(NSInteger)wardNumber {
     
-    
+    NSNumber *number = [NSNumber numberWithInt:wardNumber];
+    NSString *stringValue = [number stringValue];
     [self.connection4 cancel];
-    self.connection4 = [self makeConnectionFor:[@"getHistoryData.php?" stringByAppendingString:wardNumber]];
+    self.connection4 = [self makeConnectionFor:[@"getHistoryDataWithNumber.php?id=" stringByAppendingString:stringValue]];
     [self.connection4 start];
 }
 
@@ -129,7 +126,7 @@
                           if ([scriptName isEqual:@"getPatients.php"]) {
                               int index = [[object objectForKey:@"ward_id"] intValue];
                               [patientList replaceObjectAtIndex:index-1 withObject:object];
-                          } else if([scriptName isEqualToString:@"getWardData.php"]){
+                          } else if([scriptName rangeOfString:@"getWardDataWithNumber.php"].location != NSNotFound){
                               [wardData addObject:object];
                           }
                           else {
@@ -139,8 +136,10 @@
                           
                       }
                       
-                      if (![scriptName isEqual:@"getPatients.php"] && ![scriptName isEqualToString:@"getWardData.php"])
-                          [self.myDelegate finished];
+                      if ([scriptName rangeOfString:@"getHistoryDataWithNumber.php"].location != NSNotFound)
+                          [self.myDelegate finishedLoadHistory];
+                      if([scriptName isEqual:@"getPatients.php"])
+                          [self.myDelegate finishedLoadPatient];
                   }
                     progressBlock:nil];
 }

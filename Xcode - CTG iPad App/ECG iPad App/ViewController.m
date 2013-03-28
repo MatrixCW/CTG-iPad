@@ -34,16 +34,17 @@
 {
     [super viewDidLoad];
     self.NoDataWarning.alpha = 0.0;
-    sharedManager = [MyManager sharedManager];
-    sharedManager.myDelegate = self;
     self.segmentedControl.selectedSegmentIndex = 0;
+    sharedManager = [MyManager sharedManager];
+    [sharedManager updateCurrentWardData:self.segmentedControl.selectedSegmentIndex + 1];
+    sharedManager.myDelegate = self;
     dataForPlot = [NSMutableArray array];
-    patientView.patient = [sharedManager.patientList objectAtIndex:self.segmentedControl.selectedSegmentIndex];
-    [patientView.tableView reloadData];
+    
     
     [self constructScatterPlots];
     [self startPlot];
 }
+
 
 - (void)didReceiveMemoryWarning
 {
@@ -263,33 +264,39 @@
 
     
     timerLabel.text = [NSString stringWithFormat:@"%i", count];
+    
     if (sharedManager.wardData.count > count) {
+        
         NSDictionary* wardInfo = [[sharedManager.wardData objectAtIndex:count] copy];
         NSString* wardNumber = [wardInfo valueForKey:@"Ward"];
-        if([wardNumber intValue] == self.segmentedControl.selectedSegmentIndex + 1){
+       
+        if([wardNumber intValue] == self.segmentedControl.selectedSegmentIndex + 1 ){
             
+           
             if([[wardInfo valueForKey:@"id"] intValue] > [[[dataForPlot lastObject] valueForKey:@"id"] intValue]){
                 
                 [dataForPlot addObject:[sharedManager.wardData objectAtIndex:count]];
-                //NSLog(@"%@",[sharedManager.wardData objectAtIndex:count]);
                 self.NoDataWarning.alpha = 0.0;
             }
             else{
+                
                 self.NoDataWarning.alpha = 1.0;
                 
             }
             
         }
         if ((count+1) % 15 == 0) {
-            [sharedManager updateWardData];
+            [sharedManager updateCurrentWardData:(self.segmentedControl.selectedSegmentIndex + 1)];
         }
         
         [self updatePlots];
         
         count++;
     }
-    else
-        [sharedManager updateWardData];
+    else{
+        self.NoDataWarning.alpha = 1.0;
+        [sharedManager updateCurrentWardData:(self.segmentedControl.selectedSegmentIndex + 1)];
+    }
 }
 
 #pragma mark - UIGestureRecognizer Methods
@@ -318,25 +325,24 @@
     [dataForPlot removeAllObjects];
     [sharedManager.wardData removeAllObjects];
     count = 0;
-    NSNumber* selected = [NSNumber numberWithInt:self.segmentedControl.selectedSegmentIndex+1];
-    NSString* queryString = [@"id=" stringByAppendingString:[selected stringValue]];
-    [sharedManager getHistoryData:queryString];
+    [sharedManager getHistoryData:self.segmentedControl.selectedSegmentIndex+1];
     
 }
 
--(void)finished{
+-(void)finishedLoadPatient{
+    
+    NSLog(@"%@", [sharedManager.patientList objectAtIndex:0]);
+    
+    patientView.patient = [sharedManager.patientList objectAtIndex:self.segmentedControl.selectedSegmentIndex];
+    [patientView.tableView reloadData];
+    
+   
+    
+}
+-(void)finishedLoadHistory{
     
     
     [self removeOldPlots];
-    /*
-     for(id object in sharedManager.historyData){
-     count++;
-     [dataForPlot addObject:object];
-     [self updatePlots];
-     
-     }
-     */
-    
     
     
     timer  = [NSTimer scheduledTimerWithTimeInterval:0.001

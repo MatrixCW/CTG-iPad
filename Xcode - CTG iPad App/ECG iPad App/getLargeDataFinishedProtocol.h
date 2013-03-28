@@ -10,6 +10,7 @@
 
 @protocol getLargeDataFinishedProtocol <NSObject>
 
--(void)finished;
+-(void)finishedLoadHistory;
+-(void)finishedLoadPatient;
 
 @end
